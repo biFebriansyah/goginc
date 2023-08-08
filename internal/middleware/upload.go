@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"biFebriansyah/gogin/pkg"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,6 +11,7 @@ import (
 func UploadFile(ctx *gin.Context) {
 	file, err := ctx.FormFile("movie_banner")
 	if err != nil {
+		log.Println("error disini")
 		if err.Error() == "http: no such file" {
 			ctx.Set("image", "")
 			ctx.Next()
