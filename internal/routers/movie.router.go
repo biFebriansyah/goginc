@@ -2,20 +2,22 @@ package routers
 
 import (
 	"biFebriansyah/gogin/internal/handlers"
+	"biFebriansyah/gogin/internal/middleware"
 	"biFebriansyah/gogin/internal/repositories"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jmoiron/sqlx"
 )
 
-// ! /movie
 func movie(g *gin.Engine, d *sqlx.DB) {
 	route := g.Group("/movie")
 
-	// dependcy injection
 	repo := repositories.NewMovie(d)
 	handler := handlers.NewMovie(repo)
 
-	route.POST("/", handler.PostData)
-
+	route.POST("/", middleware.UploadFile, handler.PostData)
+	route.PATCH("/", middleware.UploadFile, handler.PatchData)
+	route.DELETE("/:id", handler.RemoveData)
+	route.GET("/", handler.FetchData)
+	route.GET("/all", handler.FetchAllData)
 }

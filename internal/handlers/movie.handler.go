@@ -1,9 +1,12 @@
 package handlers
 
 import (
+	"biFebriansyah/gogin/config"
 	"biFebriansyah/gogin/internal/models"
 	"biFebriansyah/gogin/internal/repositories"
+	"biFebriansyah/gogin/pkg"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,18 +20,84 @@ func NewMovie(r *repositories.RepoMovie) *HandlerMovie {
 }
 
 func (h *HandlerMovie) PostData(ctx *gin.Context) {
-	var movie models.Movie
+	movie := models.Movie{}
 
 	if err := ctx.ShouldBind(&movie); err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	response, err := h.CreateMovie(&movie)
+	movie.Movie_banner = ctx.MustGet("image").(string)
+	respone, err := h.CreateMovie(&movie)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 
-	ctx.JSON(200, response)
+	ctx.JSON(200, respone)
+
+}
+
+func (h *HandlerMovie) PatchData(ctx *gin.Context) {
+	movie := models.Movie{}
+
+	if err := ctx.ShouldBind(&movie); err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	movie.Movie_banner = ctx.MustGet("image").(string)
+	respone, err := h.UpdateMovie(&movie)
+	if err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	ctx.JSON(200, respone)
+
+}
+
+func (h *HandlerMovie) RemoveData(ctx *gin.Context) {
+	idMovie := ctx.Param("id")
+	data, err := h.RemoveMovie(idMovie)
+	if err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	ctx.JSON(200, data)
+}
+
+func (h *HandlerMovie) FetchAllData(ctx *gin.Context) {
+	data, err := h.GetAllMovie()
+	if err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+
+	pkg.NewRes(200, data).Send(ctx)
+}
+
+func (h *HandlerMovie) FetchData(ctx *gin.Context) {
+	name := ctx.Query("name")
+	page := ctx.DefaultQuery("page", "1")
+	limit := ctx.DefaultQuery("limit", "10")
+
+	pg, _ := strconv.Atoi(page)
+	lm, _ := strconv.Atoi(limit)
+
+	data, err := h.GetMovie(models.Meta{
+		Name:  name,
+		Page:  pg,
+		Limit: lm,
+	})
+
+	if err != nil {
+		pkg.NewRes(http.StatusBadRequest, &config.Result{
+			Data: err.Error(),
+		}).Send(ctx)
+		return
+	}
+
+	pkg.NewRes(200, data).Send(ctx)
 }
