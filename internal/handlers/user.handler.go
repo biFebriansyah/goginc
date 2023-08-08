@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"biFebriansyah/gogin/config"
 	"biFebriansyah/gogin/internal/models"
 	"biFebriansyah/gogin/internal/repositories"
 	"biFebriansyah/gogin/pkg"
@@ -29,15 +28,7 @@ func (h *HandlerUser) PostData(ctx *gin.Context) {
 		return
 	}
 
-	// TODO payload validtion here
-
-	data.Password, ers = pkg.HashPassword(data.Password)
-	if ers != nil {
-		pkg.NewRes(401, &config.Result{
-			Data: ers.Error(),
-		}).Send(ctx)
-		return
-	}
+	// TODO payload validtion and hash password here...
 
 	respone, ers := h.CreateUser(&data)
 	if ers != nil {
