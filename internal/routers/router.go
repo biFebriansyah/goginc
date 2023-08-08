@@ -9,6 +9,8 @@ func New(db *sqlx.DB) *gin.Engine {
 	router := gin.Default()
 
 	movie(router, db)
+	user(router, db)
+	auth(router, db)
 
 	return router
 }
