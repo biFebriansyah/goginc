@@ -24,7 +24,7 @@ func (r *RepoUser) CreateUser(data *models.User) (*config.Result, error) {
 		role
 	) VALUES(
 		:username, 
-		:password, 
+		:password,
 		:role
 	)
 	`

@@ -1,11 +1,13 @@
 package handlers
 
 import (
+	"biFebriansyah/gogin/config"
 	"biFebriansyah/gogin/internal/models"
 	"biFebriansyah/gogin/internal/repositories"
 	"biFebriansyah/gogin/pkg"
 	"net/http"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 )
 
@@ -28,7 +30,21 @@ func (h *HandlerUser) PostData(ctx *gin.Context) {
 		return
 	}
 
-	// TODO payload validtion and hash password here...
+	_, ers = govalidator.ValidateStruct(&data)
+	if ers != nil {
+		pkg.NewRes(401, &config.Result{
+			Data: ers.Error(),
+		}).Send(ctx)
+		return
+	}
+
+	data.Password, ers = pkg.HashPassword(data.Password)
+	if ers != nil {
+		pkg.NewRes(401, &config.Result{
+			Data: ers.Error(),
+		}).Send(ctx)
+		return
+	}
 
 	respone, ers := h.CreateUser(&data)
 	if ers != nil {

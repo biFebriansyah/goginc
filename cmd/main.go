@@ -5,12 +5,13 @@ import (
 	"biFebriansyah/gogin/pkg"
 	"log"
 
+	"github.com/asaskevich/govalidator"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/spf13/viper"
 )
 
 func init() {
-	// govalidator.SetFieldsRequiredByDefault(true)
+	govalidator.SetFieldsRequiredByDefault(true)
 	viper.SetConfigName("env.dev")
 	viper.SetConfigType("yml")
 	viper.AddConfigPath(".")
@@ -19,6 +20,7 @@ func init() {
 	if err := viper.ReadInConfig(); err != nil {
 		log.Fatal(err)
 	}
+
 }
 
 func main() {

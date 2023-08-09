@@ -15,12 +15,12 @@ CREATE TABLE tiketz.user (
 `
 
 type User struct {
-	User_id   string     `db:"user_id" json:"user_id,omitempty" form:"user_id"`
-	Username  string     `db:"username" json:"username" form:"username"`
-	Password  string     `db:"password" json:"password,omitempty"`
-	Role      string     `db:"role" json:"role,omitempty"`
-	CreatedAt *time.Time `db:"created_at" json:"created_at"`
-	UpdateAt  *time.Time `db:"updated_at" json:"updated_at"`
+	User_id   string     `db:"user_id" json:"user_id,omitempty" form:"user_id" valid:"-"`
+	Username  string     `db:"username" json:"username" form:"username" valid:"type(string)"`
+	Password  string     `db:"password" json:"password,omitempty" valid:"stringlength(6|10)~Password minimal 6"`
+	Role      string     `db:"role" json:"role,omitempty" valid:"-"`
+	CreatedAt *time.Time `db:"created_at" json:"created_at" valid:"-"`
+	UpdateAt  *time.Time `db:"updated_at" json:"updated_at" valid:"-"`
 }
 
 type Users []User

@@ -22,7 +22,6 @@ func NewAuth(r *repositories.RepoUser) *HandlerAuth {
 }
 
 func (h *HandlerAuth) Login(ctx *gin.Context) {
-
 	var data User
 	if ers := ctx.ShouldBind(&data); ers != nil {
 		pkg.NewRes(500, &config.Result{
@@ -31,5 +30,29 @@ func (h *HandlerAuth) Login(ctx *gin.Context) {
 		return
 	}
 
-	pkg.NewRes(200, &config.Result{Data: data.Username}).Send(ctx)
+	users, err := h.GetAuthData(data.Username)
+	if err != nil {
+		pkg.NewRes(401, &config.Result{
+			Data: err.Error(),
+		}).Send(ctx)
+		return
+	}
+
+	if err := pkg.VerifyPassword(users.Password, data.Password); err != nil {
+		pkg.NewRes(401, &config.Result{
+			Data: "Password salah",
+		}).Send(ctx)
+		return
+	}
+
+	jwtt := pkg.NewToken(users.User_id, users.Role)
+	tokens, err := jwtt.Generate()
+	if err != nil {
+		pkg.NewRes(500, &config.Result{
+			Data: err.Error(),
+		}).Send(ctx)
+		return
+	}
+
+	pkg.NewRes(200, &config.Result{Data: tokens}).Send(ctx)
 }

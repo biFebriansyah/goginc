@@ -21,7 +21,6 @@ func (r *Response) Send(ctx *gin.Context) {
 }
 
 func NewRes(code int, data *config.Result) *Response {
-	// dataCheck := reflect.TypeOf(data)
 	var respone = Response{
 		Code:   code,
 		Status: getStatus(code),
