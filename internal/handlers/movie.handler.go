@@ -5,6 +5,7 @@ import (
 	"biFebriansyah/gogin/internal/models"
 	"biFebriansyah/gogin/internal/repositories"
 	"biFebriansyah/gogin/pkg"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -91,6 +92,8 @@ func (h *HandlerMovie) FetchData(ctx *gin.Context) {
 		Page:  pg,
 		Limit: lm,
 	})
+
+	log.Println(err)
 
 	if err != nil {
 		pkg.NewRes(http.StatusBadRequest, &config.Result{

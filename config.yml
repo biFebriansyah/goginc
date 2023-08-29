@@ -7,10 +7,10 @@ appPort: 8081
 jwt:
   secrets: "abcdabcd"
 database:
-  host: "127.0.0.1"
+  host: $DB_HOST
   port: 5432
   user: "db_user_here"
-  name: "db_name_here"
+  name: $DB_NAME
   pass: "db_pass_here"
 cloudinary:
   name: "cd_name_here"
