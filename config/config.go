@@ -21,7 +21,7 @@ type Result struct {
 }
 
 var CorsConfig = cors.Config{
-	AllowOrigins:     []string{"http://www.google.com", "http://127.0.0.1:5500"},
+	AllowOrigins:     []string{"https://glistening-taffy-bfdcf2.netlify.app", "http://127.0.0.1:3000"},
 	AllowMethods:     []string{"PUT", "PATCH", "GET", "POST", "HEAD", "OPTIONS"},
 	AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 	AllowCredentials: true,
