@@ -1,5 +1,5 @@
 #! buat image container
-FROM golang:1.20.3-alpine
+FROM golang:1.20.3-alpine AS build
 
 
 #! buat folder untuk niympan code
@@ -12,10 +12,18 @@ COPY . .
 RUN go mod download
 RUN go build -v -o /goapp/goback ./cmd/main.go
 
-#! open port for app 
+#! create other images 
+# Final stage
+FROM alpine:3.14
+
+WORKDIR /goapp
+
+#! copy build file
+COPY --from=build /goapp /goapp
+
+ENV PATH="/goapp:${PATH}"
+
 EXPOSE 8081
 
-#! run app
-ENTRYPOINT [ "/goapp/goback" ]
+ENTRYPOINT ["goback", "--listen"]
 
-#! docker run --name gotest --net local_default -e DB_HOST=pglocal -p 8082:8081 bukanebi/goapps:2
