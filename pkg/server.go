@@ -1,21 +1,19 @@
 package pkg
 
 import (
-	"biFebriansyah/gogin/config"
 	"log"
 	"net/http"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/rs/cors"
 )
 
 func Server(router *gin.Engine) *http.Server {
 	var addr string = "0.0.0.0:8080"
 	var whiteList []string
-	var corsConfig = config.CorsConfig
 
 	if port := os.Getenv("PORT"); port != "" {
 		addr = ":" + port
@@ -27,27 +25,19 @@ func Server(router *gin.Engine) *http.Server {
 
 	log.Println(whiteList)
 
-	corsConfig.AllowOriginFunc = func(origin string) bool {
-		var check bool
-		for _, v := range whiteList {
-			log.Println(v)
-			if v == origin {
-				check = true
-				break
-			}
-		}
+	c := cors.New(cors.Options{
+		AllowedOrigins:   whiteList,
+		AllowedHeaders:   []string{"Origin", "Content-Type", "Authorization"},
+		AllowedMethods:   []string{"PUT", "PATCH", "GET", "POST", "HEAD", "OPTIONS"},
+		AllowCredentials: true,
+	})
 
-		log.Printf("origin %s allowing %t", origin, check)
-		return check
-	}
-
-	router.Use(cors.New(corsConfig))
 	srv := &http.Server{
 		Addr:         addr,
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 15,
-		Handler:      router,
+		Handler:      c.Handler(router),
 	}
 
 	return srv
