@@ -10,6 +10,14 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+type RepoMovieIF interface {
+	CreateMovie(data *models.Movie) (string, error)
+	UpdateMovie(data *models.Movie) (string, error)
+	RemoveMovie(idMovie string) (string, error)
+	GetAllMovie() (*config.Result, error)
+	GetMovie(params models.Meta) (*config.Result, error)
+}
+
 type RepoMovie struct {
 	*sqlx.DB
 }

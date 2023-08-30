@@ -6,6 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func SayHello(name string) string {
+	return "hello " + name
+}
+
 func Example() {
 	router := gin.Default()
 

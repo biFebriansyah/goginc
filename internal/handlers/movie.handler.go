@@ -12,10 +12,10 @@ import (
 )
 
 type HandlerMovie struct {
-	*repositories.RepoMovie
+	repositories.RepoMovieIF
 }
 
-func NewMovie(r *repositories.RepoMovie) *HandlerMovie {
+func NewMovie(r repositories.RepoMovieIF) *HandlerMovie {
 	return &HandlerMovie{r}
 }
 
